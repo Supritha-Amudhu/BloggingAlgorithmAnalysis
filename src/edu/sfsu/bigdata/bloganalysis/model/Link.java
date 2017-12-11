@@ -5,6 +5,11 @@ public class Link {
 	private String url;
 	private String linkText;
 	
+	public Link() {}
+	
+	public Link(String url) {
+		this.url = url;
+	}
 	public String getUrl() {
 		return url;
 	}
@@ -16,6 +21,11 @@ public class Link {
 	}
 	public void setLinkText(String linkText) {
 		this.linkText = linkText;
+	}
+	
+	@Override
+	public String toString() {
+		return "[linkText='"+this.linkText+"', url='"+this.url+"']";
 	}
 	
 }
