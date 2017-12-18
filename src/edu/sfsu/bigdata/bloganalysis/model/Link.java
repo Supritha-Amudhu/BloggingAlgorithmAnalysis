@@ -5,11 +5,19 @@ public class Link {
 	private String url;
 	private String linkText;
 	
+	/**
+	 * Define default and parameterized constructors
+	 */
 	public Link() {}
 	
 	public Link(String url) {
 		this.url = url;
 	}
+	
+	/**
+	 * Define Getters and Setters for Link parameters
+	 * @return
+	 */
 	public String getUrl() {
 		return url;
 	}

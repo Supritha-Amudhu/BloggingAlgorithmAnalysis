@@ -2,8 +2,6 @@ package edu.sfsu.bigdata.bloganalysis.core;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class PageRank {
@@ -17,9 +15,6 @@ public class PageRank {
     private HashMap<String,Set<String>> pageLinks;
     private HashMap<String,Integer> pageIndex;
     private String[] sortedPageRank;
-    private String[] sortedInDegree;
-    private String[] sortedOutDegree;
-
     private int numEdges;
 
     public PageRank(String filename, double approxParam){
@@ -33,38 +28,11 @@ public class PageRank {
         this.pageIndex = new HashMap<>();
         calculatePageRanks();
         createSortedPageRank();
-        createSortedDegrees();
     }
-
-    private void createSortedDegrees() {
-        SortedSet<Map.Entry<String, Integer>> sortedset = new TreeSet<Map.Entry<String, Integer>>(
-                new Comparator<Map.Entry<String, Integer>>() {
-                    @Override
-                    public int compare(Map.Entry<String, Integer> e1,
-                                       Map.Entry<String, Integer> e2) {
-                        if(e2.getValue().compareTo(e1.getValue()) == 0){
-                            return e1.getKey().compareTo(e2.getKey());
-                        }else
-                            return e2.getValue().compareTo(e1.getValue());
-                    }
-                });
-        sortedset.addAll(this.inDegrees.entrySet());
-        Iterator<Map.Entry<String,Integer>> iterator = sortedset.iterator();
-        this.sortedInDegree = new String[this.inDegrees.size()];
-        int i=0;
-        while(iterator.hasNext()){
-            this.sortedInDegree[i++] = iterator.next().getKey();
-        }
-        sortedset.clear();
-        sortedset.addAll(this.outDegrees.entrySet());
-        iterator = sortedset.iterator();
-        this.sortedOutDegree = new String[this.outDegrees.size()];
-        i=0;
-        while(iterator.hasNext()){
-            this.sortedOutDegree[i++] = iterator.next().getKey();
-        }
-    }
-
+    
+    /**
+     * Once the final page rank has been calculated, sort the pages based on page rank.
+     */
     private void createSortedPageRank() {
         SortedSet<Map.Entry<String, Double>> sortedset = new TreeSet<Map.Entry<String, Double>>(
                 new Comparator<Map.Entry<String, Double>>() {
@@ -103,6 +71,11 @@ public class PageRank {
         return numEdges;
     }
 
+    /**
+     * Based on the sorted pages, return the top K pages with highest rank.
+     * @param k
+     * @return top K page ranks
+     */
     public String[] topKPageRank(int k){
         int size = this.sortedPageRank.length<k?this.sortedPageRank.length:k;
         String[] topKPages = new String[size];
@@ -112,24 +85,10 @@ public class PageRank {
         return topKPages;
     }
 
-    public String[] topKInDegree(int k){
-        int size = this.sortedInDegree.length<k?this.sortedInDegree.length:k;
-        String[] topKInDegree = new String[size];
-        for(int i=0;i<size;i++) {
-            topKInDegree[i] = this.sortedInDegree[i];
-        }
-        return topKInDegree;
-    }
-
-    public String[] topKOutDegree(int k){
-        int size = this.sortedOutDegree.length<k?this.sortedOutDegree.length:k;
-        String[] topKOutDegree = new String[size];
-        for(int i=0;i<size;i++) {
-            topKOutDegree[i] = this.sortedOutDegree[i];
-        }
-        return topKOutDegree;
-    }
-
+    /**
+     * Read number of nodes from first line of edge file.
+     * For each line, split line into source and target node and create the edge lists.
+     */
     private void parseGraph(){
         
         try {
@@ -180,43 +139,48 @@ public class PageRank {
 
                 }
             }
+            bufferedReader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
+    
+    /**
+     * Main driver method for calculating page rank.
+     */
     private void calculatePageRanks() {
+    	// parse the edge file and build the page rank matrix
         parseGraph();
+        // create an index for each page
         createPageIndex();
-        int n=1;
         double norm = 0.0;
         boolean converged = false;
+        // initialize the first iteration page ranks
         HashMap<String,Double> currentRank = this.pageRanks;
         HashMap<String,Double> nextRank;
+        // while page rank from two subsequent iterations do not converge, 
         while(!converged){
+        	// compute page rank for next iteration
             nextRank = computeNextP(currentRank);
             norm = normalize(nextRank,currentRank);
-            System.out.println(norm);
             if(norm <= this.approxParam){
                 converged = true;
                 this.pageRanks = nextRank;
                 break;
             }
             currentRank = nextRank;
-            n++;
         }
     }
 
-    private double getSumOfPageRanks(HashMap<String,Double> currentRank){
-        double pgr = 0.0;
-        for(String page : currentRank.keySet()){
-            pgr += currentRank.get(page);
-        }
-        return pgr;
-    }
-
+    /**
+     * Given PageRanks from two subsequent iteration, compute the sum of absolute difference
+     * of each page's rank
+     * @param nextRank
+     * @param currentRank
+     * @return
+     */
     private double normalize(HashMap<String, Double> nextRank, HashMap<String, Double> currentRank) {
         Iterator<String> keysIterator = nextRank.keySet().iterator();
         double normalize = 0;
@@ -227,18 +191,25 @@ public class PageRank {
         return normalize;
     }
 
+    /**
+     * Compute the page rank for each page in the next iteration.
+     * @param prevRank
+     * @return PageRank for next iteration.
+     */
     private HashMap<String,Double> computeNextP(HashMap<String,Double> prevRank){
         HashMap<String,Double> nextRank = new HashMap<>();
         initializeNextP(nextRank,prevRank);
         Iterator<String> pageIterator = nextRank.keySet().iterator();
         while(pageIterator.hasNext()){
             String page = pageIterator.next();
+            // if the current page has out links
             if(this.outDegrees.get(page) != 0){
                 Set<String> linksInPage = this.pageLinks.get(page);
                 Iterator<String> linksIterator = linksInPage.iterator();
                 while(linksIterator.hasNext()){
                     String link = linksIterator.next();
                     double currentRank = nextRank.get(link);
+                    // current rank depends on rank of each out link in the previous iteration.
                     currentRank += beta*(prevRank.get(page)/linksInPage.size());
                     nextRank.put(link,currentRank);
                 }
@@ -258,6 +229,11 @@ public class PageRank {
         return nextRank;
     }
 
+    /**
+     * Initialize the page rank matrix for the next iteration. Initialize it to (1-beta)/numNodes.
+     * @param nextRank
+     * @param prevRank
+     */
     private void initializeNextP(HashMap<String, Double> nextRank, HashMap<String, Double> prevRank) {
         Iterator<String> keySet = prevRank.keySet().iterator();
         double val = (1-beta)/prevRank.size();
@@ -267,6 +243,9 @@ public class PageRank {
 
     }
 
+    /**
+     * Assign a page index to each node. 
+     */
     private void createPageIndex(){
         Set<String> pages = this.pageRanks.keySet();
         Iterator<String> pageIterator = pages.iterator();
@@ -275,25 +254,21 @@ public class PageRank {
             this.pageIndex.put(pageIterator.next(),index++);
         }
     }
-
+    
+    /**
+     * Creates PageRank object using the given edge file and the approximation factor.
+     * Computes the page rank and prints the rank of top 500 pages.
+     * @param args
+     */
     public static void main(String[] args){
         PageRank pageRank = new PageRank("edges.txt",0.005);
         double pgr = 0.0;
         System.out.println("Top N page Ranks - ");
         for(String s :pageRank.topKPageRank(500)){
-        	if(s.startsWith("https://medium.com/")){
+        	if(s.startsWith("https://medium.")){
         		pgr += pageRank.pageRankOf(s);
                 System.out.println(s+"\t"+pageRank.pageRankOf(s));
         	}
         }
-        /*System.out.println("Top 15 In Degrees - ");
-        for(String s: pageRank.topKInDegree(15)){
-            System.out.println(s+"\t"+pageRank.inDegreeOf(s));
-        }
-        System.out.println("Top 15 Out Degrees - ");
-        for(String s: pageRank.topKOutDegree(15)){
-            System.out.println(s+"\t"+pageRank.outDegreeOf(s));
-        }*/
-
     }
 }

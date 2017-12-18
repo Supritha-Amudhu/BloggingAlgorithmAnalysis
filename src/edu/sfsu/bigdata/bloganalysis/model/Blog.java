@@ -14,10 +14,18 @@ public class Blog {
 	private long commentsCount;
 	private long blogLength;
 	
+	/**
+	 * Constructor to create a Blog object
+	 * @param blogURL
+	 */
 	public Blog(String blogURL) {
 		this.url = new Link(blogURL); 
 	}
 	
+	/**
+	 * Getters and Setters for the Blog object parameters
+	 * @return
+	 */
 	public String getBlogName() {
 		return blogName;
 	}

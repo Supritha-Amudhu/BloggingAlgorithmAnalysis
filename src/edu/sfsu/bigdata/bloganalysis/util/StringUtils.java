@@ -7,10 +7,20 @@ public class StringUtils {
 	
 	private static final Pattern commentsCountPattern = Pattern.compile("[0-9](.[0-9])?(M?|K?|B?)");
 	
+	/**
+	 * Checks if a string is not empty or null
+	 * @param val
+	 * @return
+	 */
 	public static boolean isNotEmpty(String val) {
 		return val != null && !val.trim().isEmpty();
 	}
 	
+	/**
+	 * Checks if a string is an integer
+	 * @param val
+	 * @return
+	 */
 	public static boolean isInteger(String val) {
 		if (isNotEmpty(val)) {
 			try {
@@ -24,6 +34,11 @@ public class StringUtils {
 		return false;
 	}
 	
+	/**
+	 * Checks if the number of comments parsed is a valid number and returns true or false
+	 * @param val
+	 * @return
+	 */
 	public static boolean isValidCommentsCountText(String val) {
 		if (isNotEmpty(val)) {
 			Matcher matcher = commentsCountPattern.matcher(val);
@@ -32,6 +47,11 @@ public class StringUtils {
 		return false;
 	}
 	
+	/**
+	 * Gets the number of comments for each Blog
+	 * @param val
+	 * @return
+	 */
 	public static long getCommentsCount(String val) {
 		if (isValidCommentsCountText(val)) {
 			String multiplier = val.substring(val.length() - 2, val.length() - 1);

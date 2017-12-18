@@ -22,6 +22,11 @@ public class BlogParser {
 
 	private static final String GET = "GET";
 	
+	/**
+	 * Parses each blog to get Blog parameters
+	 * @param blogURL
+	 * @return
+	 */
 	public static Blog parseBlog(String blogURL) {
 		try {
 			Blog blog = new Blog(blogURL);
@@ -55,10 +60,20 @@ public class BlogParser {
 		return null;
 	}
 	
+	/**
+	 * Checks if the Blog being parsed is a valid HTML document
+	 * @param blog
+	 * @return
+	 */
 	private static boolean isValidHTMLDocument(Blog blog) {
 		return blog.getHtmlDocument() != null && blog.getHtmlDocument().body() != null;
 	}
 	
+	/**
+	 * Parse each Blog's body to get the Outlinks mapped to it
+	 * @param blog
+	 * @return
+	 */
 	private static List<Link> parseLinks(Blog blog) {
 		if (isValidHTMLDocument(blog)) {
 			List<Link> outlinks = new ArrayList<>();
@@ -80,6 +95,11 @@ public class BlogParser {
 		return null;
 	}
 	
+	/**
+	 * Parse each Blog to get the count of comments in it
+	 * @param blog
+	 * @return
+	 */
 	private static long parseComments(Blog blog) {
 		long commentsCount = 0;
 		if (isValidHTMLDocument(blog)) {
@@ -105,6 +125,11 @@ public class BlogParser {
 		return commentsCount;
 	}
 	
+	/**
+	 * Parse each Blog to get Blog Length as count of words
+	 * @param blog
+	 * @return
+	 */
 	private static long getBlogLength(Blog blog) {
 		long blogLength = 0;
 		if (isValidHTMLDocument(blog)) {

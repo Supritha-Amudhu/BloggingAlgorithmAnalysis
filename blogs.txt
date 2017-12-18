@@ -210,7 +210,6 @@ https://medium.com/@Michael_Spencer/bitcoin-hacked-attention-economy-aa0aaaaaf50
 https://medium.com/@sarahmiller_97850/i-am-a-millennial-that-moved-back-in-with-her-mother-9d8dab66eaf
 https://medium.com/stanford-magazine/stanford-research-on-effects-of-radioactivity-from-bikini-atoll-nuclear-tests-on-coral-and-crab-dna-48459144020c
 https://medium.com/starts-with-a-bang/how-traveling-back-in-time-could-really-physically-be-possible-b212517d01c9
-https://medium.com/reaching-out/gay-and-catholic-30f7755a4726
 https://medium.com/@lydiahallie/advice-from-a-19-y-o-girl-software-developer-88737bcc6be5
 https://medium.com/invironment/what-i-learned-from-a-year-of-dumpster-diving-in-australia-d6f509095a5b
 https://medium.com/@sallylepage/in-2017-uk-water-companies-still-rely-on-magic-6eb62e036b02
@@ -498,3 +497,8 @@ https://medium.freecodecamp.org/the-truth-is-in-the-code-86a712362c99
 https://medium.com/@vaidehijoshi/crafting-better-code-reviews-1a5fc00a9312
 https://medium.freecodecamp.org/understanding-node-js-event-driven-architecture-223292fcbc2d
 https://medium.com/@rajaraodv/two-quick-ways-to-reduce-react-apps-size-in-production-82226605771a
+https://proandroiddev.com/kotlins-nothing-type-946de7d464fb
+https://proandroiddev.com/introduction-to-android-architecture-components-cab33baa65f6
+https://medium.com/googleplaydev/women-and-mobile-games-learnings-for-developers-cc4ac63da3f2
+https://medium.com/@sachagreif/announcing-the-stateofjs-2017-launch-livestream-14e4aeeeec3a
+https://medium.com/google-design/the-android-developers-guide-to-better-typography-97e11bb0e261
